@@ -30,20 +30,26 @@ public class User {
     @Column(length = 25, nullable = false)
     private String lastName;
 
-    @Column(length = 25, nullable = false, unique = true)
+    @Column(length = 25, nullable = false, unique = true)//uniq olmalı
     private String userName;
 
-    @Column(length = 255, nullable = false)
+    @Column(length = 255, nullable = false)//bazı hash algoritmalarının yuksek çıkma ihtimaline karsı
     private String password;
 
-    @JoinTable(name="tbl_user_role",
-            joinColumns = @JoinColumn(name="user_id"),
-            inverseJoinColumns = @JoinColumn(name="role_id"))
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> role = new HashSet<>(); // Admin ; Student
+    //!!! user ile rolu bagladık
+    @JoinTable(name="tbl_user_role",//yeni bir tablo olusm
+            joinColumns = @JoinColumn(name="user_id"),//bu taraftan gelecek olan datanın tutulması için olusacak kolonun ismi ası lazım
+            inverseJoinColumns = @JoinColumn(name="role_id"))//rolden  tarafından gelecek olan datanın tutulması için olusacak kolonun ismi ası lazım
 
+    @ManyToMany(fetch = FetchType.EAGER)//userı her cektigim de rolleri bana gelmesi lazım.useri biz bunun için olusturuyoruz zaten
+    //eger lazy dersek 2 tane query atmak zorunda kalacak ama eager'a cekersen tek query de halledecek
+    private Set<Role> role = new HashSet<>();
+    // Admin ; Student -> biri 2 kere ADMIN de girse alır.Listte uniqlik yoktur bu yuzde set kullandık
+
+
+    //!!! user ile studenti baglamamız lazım
     @JsonIgnore
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user")//ilişki sahibi student olsun diyorum
     private Student student;
 
 //user'in bu uygulama icerisinde birebir eslesmesini istiyoruz.

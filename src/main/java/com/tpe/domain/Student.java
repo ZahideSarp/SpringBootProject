@@ -53,7 +53,7 @@ public class Student {
     private List<Book> book = new ArrayList<>();
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id")//iliski sahibi burası
     private User user;
 
 }
