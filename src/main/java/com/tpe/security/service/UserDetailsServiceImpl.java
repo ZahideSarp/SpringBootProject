@@ -26,10 +26,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     UserRepository userRepository;
 
     //loadUserByUsername() methodu turetilen bir method degil ama ilerde
-    // gorecegşz benim username'mim aslında bu username'in emaili gibi degişiklikler yapacagız
+    // gorecegiz benim username'mim aslında bu username'in emaili gibi degişiklikler yapacagız
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //user'a ulamak icin normalde best practice service aracılıgıyla db'ye gitmemiz lazim
+        //user'a ulaşmak icin normalde best practice service aracılıgıyla db'ye gitmemiz lazim
         //Ama simdi UserRepository'i enjecte edecegiz bu class'a ve oradan direk db ye gidecegiz
         // Cunku bunun cok fazla end pointleri yokconfilikt olma ihtimali yok yada BusinnesLogic yapcak bir durum yok.
         User user = userRepository.findByUserName(username).orElseThrow(() ->
@@ -37,7 +37,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         //gelen user null ise diye de bir kontrol yapacagız
         if (user != null) {
             //eger null degil ise user'i userDetails formatına cevirecek.
-            return new org.springframework.security.core.userdetails.User(
+            return new org.springframework.security.core.userdetails.User(//bizim olusturdugumuz user degil de sprinFrameWork'ın
+            //user'ini belirtmek için path'ini yazdık
                     user.getUserName(),
                     user.getPassword(),
                     buildGrantedAuthority(user.getRole())
